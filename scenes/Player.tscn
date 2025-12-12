@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://player_scene"]
+[gd_scene load_steps=7 format=3 uid="uid://player_scene"]
 
 [ext_resource type="Script" path="res://scripts/Player.gd" id="1_player"]
 [ext_resource type="Texture2D" path="res://assets/sprites/characters/character_1.png" id="2_sprite"]
@@ -7,6 +7,16 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_collision"]
 size = Vector2(14, 20)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_name_bg"]
+bg_color = Color(0, 0, 0, 0.7)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+shadow_color = Color(0, 0, 0, 0.3)
+shadow_size = 2
+shadow_offset = Vector2(0, 1)
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_player")
@@ -18,23 +28,51 @@ texture_filter = 1
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_collision")
 
-[node name="NameLabel" type="Label" parent="."]
-offset_left = -50
-offset_top = -40
-offset_right = 50
-offset_bottom = -24
+[node name="NameContainer" type="PanelContainer" parent="."]
+offset_left = -40
+offset_top = -45
+offset_right = 40
+offset_bottom = -28
+
+[node name="NameLabel" type="Label" parent="NameContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.5)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 11
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MicIndicator" type="Sprite2D" parent="."]
-position = Vector2(12, -20)
+[node name="MicContainer" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 35
+offset_top = -45
+offset_right = 51
+offset_bottom = -29
+
+[node name="MicBackground" type="ColorRect" parent="MicContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="MicIndicator" type="Sprite2D" parent="MicContainer"]
+position = Vector2(8, 8)
 texture = ExtResource("3_mic")
 texture_filter = 1
 
 [node name="SpeakingIndicator" type="Sprite2D" parent="."]
 visible = false
-modulate = Color(1, 1, 0.5, 0.7)
+modulate = Color(1, 0.9, 0.3, 0.8)
 position = Vector2(0, 0)
+scale = Vector2(1.2, 1.2)
 texture = ExtResource("4_speak")
 texture_filter = 1
 

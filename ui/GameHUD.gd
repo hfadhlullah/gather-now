@@ -40,6 +40,13 @@ func _ready() -> void:
 	
 	# Update nearby list periodically
 	_update_nearby_list()
+	
+	# Create a timer to update nearby list every second
+	var timer := Timer.new()
+	timer.wait_time = 1.0
+	timer.autostart = true
+	timer.timeout.connect(_update_nearby_list)
+	add_child(timer)
 
 
 func _on_mic_button_pressed() -> void:
@@ -68,11 +75,11 @@ func _on_area_changed(area_name: String) -> void:
 		area_label.text = "Area: " + area_name
 
 
-func _on_player_entered_range(peer_id: int) -> void:
+func _on_player_entered_range(_peer_id: int) -> void:
 	_update_nearby_list()
 
 
-func _on_player_exited_range(peer_id: int) -> void:
+func _on_player_exited_range(_peer_id: int) -> void:
 	_update_nearby_list()
 
 

@@ -27,8 +27,8 @@ var target_position: Vector2 = Vector2.ZERO
 
 ## References to child nodes
 @onready var sprite: Sprite2D = $Sprite2D
-@onready var name_label: Label = $NameLabel
-@onready var mic_indicator: Sprite2D = $MicIndicator
+@onready var name_label: Label = $NameContainer/NameLabel
+@onready var mic_indicator: Sprite2D = $MicContainer/MicIndicator
 @onready var speaking_indicator: Sprite2D = $SpeakingIndicator
 @onready var camera: Camera2D = $Camera2D
 
@@ -45,9 +45,6 @@ func _ready() -> void:
 		var tex := load("res://assets/sprites/characters/character_%d.png" % i) as Texture2D
 		if tex:
 			character_textures.append(tex)
-	
-	# Register with VoiceManager for proximity tracking
-	VoiceManager.register_player(peer_id, self)
 	
 	# Connect to voice manager signals for this player
 	VoiceManager.mic_toggled.connect(_on_mic_toggled)
@@ -118,6 +115,9 @@ func setup(p_peer_id: int, p_username: String, p_character_id: int) -> void:
 	else:
 		camera.enabled = false
 		print("[Player] Remote player (peer ", p_peer_id, ") - camera disabled")
+	
+	# Register with VoiceManager now that we have a valid peer_id
+	VoiceManager.register_player(peer_id, self)
 	
 	# Update visuals if nodes are ready
 	if is_node_ready():
