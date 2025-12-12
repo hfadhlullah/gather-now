@@ -1,44 +1,10 @@
-[gd_scene load_steps=18 format=3 uid="uid://office_map"]
+[gd_scene load_steps=12 format=3 uid="uid://office_map"]
 
 [ext_resource type="Script" path="res://scenes/Office.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/maps/tilesets/FloorAndGround.png" id="2_floor_texture"]
-[ext_resource type="Texture2D" path="res://assets/maps/tilesets/Modern_Office_Black_Shadow.png" id="3_office_texture"]
-[ext_resource type="Texture2D" path="res://assets/maps/tilesets/chair.png" id="4_chair"]
-[ext_resource type="Texture2D" path="res://assets/maps/tilesets/computer.png" id="5_computer"]
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_floor"]
-texture = ExtResource("2_floor_texture")
-texture_region_size = Vector2i(32, 32)
-0:0/0 = 0
-1:0/0 = 0
-2:0/0 = 0
-3:0/0 = 0
-4:0/0 = 0
-0:1/0 = 0
-1:1/0 = 0
-2:1/0 = 0
-3:1/0 = 0
-4:1/0 = 0
-0:2/0 = 0
-1:2/0 = 0
-2:2/0 = 0
-3:2/0 = 0
-4:2/0 = 0
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_office"]
-texture = ExtResource("3_office_texture")
-texture_region_size = Vector2i(32, 32)
-0:0/0 = 0
-1:0/0 = 0
-2:0/0 = 0
-0:1/0 = 0
-1:1/0 = 0
-2:1/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_main"]
-tile_size = Vector2i(32, 32)
-sources/0 = SubResource("TileSetAtlasSource_floor")
-sources/1 = SubResource("TileSetAtlasSource_office")
+[ext_resource type="Texture2D" path="res://assets/sprites/furniture/computers/computer_00.png" id="2_computer_00"]
+[ext_resource type="Texture2D" path="res://assets/sprites/furniture/computers/computer_01.png" id="3_computer_01"]
+[ext_resource type="Texture2D" path="res://assets/sprites/furniture/computers/computer_02.png" id="4_computer_02"]
+[ext_resource type="Texture2D" path="res://assets/sprites/furniture/computers/computer_04.png" id="5_computer_04"]
 
 [sub_resource type="RectangleShape2D" id="topwall"]
 size = Vector2(1024, 20)
@@ -52,34 +18,32 @@ size = Vector2(20, 600)
 [sub_resource type="RectangleShape2D" id="rightwall"]
 size = Vector2(20, 600)
 
-[sub_resource type="RectangleShape2D" id="table1"]
-size = Vector2(96, 64)
-
-[sub_resource type="RectangleShape2D" id="table2"]
-size = Vector2(96, 64)
+[sub_resource type="RectangleShape2D" id="desk_collision"]
+size = Vector2(32, 48)
 
 [sub_resource type="RectangleShape2D" id="divider"]
 size = Vector2(20, 200)
 
 [sub_resource type="RectangleShape2D" id="lobby_area"]
-size = Vector2(450, 500)
+size = Vector2(448, 536)
 
 [sub_resource type="RectangleShape2D" id="meeting_area"]
-size = Vector2(450, 200)
+size = Vector2(448, 224)
 
 [sub_resource type="RectangleShape2D" id="lounge_area"]
-size = Vector2(450, 250)
+size = Vector2(448, 248)
 
 [node name="Office" type="Node2D"]
 script = ExtResource("1_script")
-spawn_position = Vector2(400, 300)
+spawn_position = Vector2(200, 300)
 
-[node name="FloorLayer" type="TileMapLayer" parent="."]
-tile_set = SubResource("TileSet_main")
-tile_map_data = PackedByteArray("AAD//wAAAAAAAAD+/wAAAAAAAAD9/wAAAAAAAAD8/wAAAAAAAAD7/wAAAAAAAAD6/wAAAAAAAAD5/wAAAAAAAAD4/wAAAAAAAAD3/wAAAAAAAAD2/wAAAAAAAAD1/wAAAAAAAAD0/wAAAAAAAADz/wAAAAAAAADy/wAAAAAAAADx/wAAAAAAAADw/wAAAAAAAADv/wAAAAAAAADu/wAAAAAAAADt/wAAAAAAAADs/wAAAAAAAADr/wAAAAAAAADq/wAAAAAAAADp/wAAAAAAAADo/wAAAAAAAADn/wAAAAAAAADm/wAAAAAAAADl/wAAAAAAAADk/wAAAAAAAADj/wAAAAAAAADi/wAAAAAAAAAA/v8AAAAAAAAAAP3/AAAAAAAAAAD8/wAAAAAAAP//AQAAAAAAAAABAQAAAAAAAAACAQAAAAAAAAADAQAAAAAAAAAEAQAAAAAAAAAFAQAAAAAAAAAGAQAAAAAAAAAHAQAAAAAAAAAIAQAAAAAAAAAJAQAAAAAAAAAKAQAAAAAAAAALAQA=")
+[node name="FloorLayers" type="Node2D" parent="."]
 
-[node name="ObjectLayer" type="TileMapLayer" parent="."]
-tile_set = SubResource("TileSet_main")
+[node name="LobbyFloor" type="Node2D" parent="FloorLayers"]
+
+[node name="MeetingRoomFloor" type="Node2D" parent="FloorLayers"]
+
+[node name="LoungeFloor" type="Node2D" parent="FloorLayers"]
 
 [node name="Walls" type="StaticBody2D" parent="."]
 
@@ -104,60 +68,86 @@ offset_left = 0
 offset_top = 0
 offset_right = 1024
 offset_bottom = 20
-color = Color(0.25, 0.25, 0.3, 1)
+color = Color(0.2, 0.2, 0.25, 1)
 
 [node name="WallVisualBottom" type="ColorRect" parent="Walls"]
 offset_left = 0
 offset_top = 580
 offset_right = 1024
 offset_bottom = 600
-color = Color(0.25, 0.25, 0.3, 1)
+color = Color(0.2, 0.2, 0.25, 1)
 
 [node name="WallVisualLeft" type="ColorRect" parent="Walls"]
 offset_left = 0
 offset_top = 0
 offset_right = 20
 offset_bottom = 600
-color = Color(0.25, 0.25, 0.3, 1)
+color = Color(0.2, 0.2, 0.25, 1)
 
 [node name="WallVisualRight" type="ColorRect" parent="Walls"]
 offset_left = 1004
 offset_top = 0
 offset_right = 1024
 offset_bottom = 600
-color = Color(0.25, 0.25, 0.3, 1)
+color = Color(0.2, 0.2, 0.25, 1)
 
 [node name="Furniture" type="Node2D" parent="."]
 
-[node name="Table1" type="StaticBody2D" parent="Furniture"]
-position = Vector2(180, 120)
+[node name="MeetingRoomDesks" type="Node2D" parent="Furniture"]
 
-[node name="Table1Collision" type="CollisionShape2D" parent="Furniture/Table1"]
-shape = SubResource("table1")
+[node name="Desk1" type="StaticBody2D" parent="Furniture/MeetingRoomDesks"]
+position = Vector2(600, 100)
 
-[node name="Table1Sprite" type="Sprite2D" parent="Furniture/Table1"]
-texture = ExtResource("5_computer")
-scale = Vector2(2, 2)
+[node name="Collision" type="CollisionShape2D" parent="Furniture/MeetingRoomDesks/Desk1"]
+shape = SubResource("desk_collision")
 
-[node name="Chair1" type="Sprite2D" parent="Furniture"]
-position = Vector2(180, 180)
-texture = ExtResource("4_chair")
-scale = Vector2(1.5, 1.5)
+[node name="Sprite" type="Sprite2D" parent="Furniture/MeetingRoomDesks/Desk1"]
+texture = ExtResource("2_computer_00")
 
-[node name="Table2" type="StaticBody2D" parent="Furniture"]
-position = Vector2(800, 120)
+[node name="Desk2" type="StaticBody2D" parent="Furniture/MeetingRoomDesks"]
+position = Vector2(700, 100)
 
-[node name="Table2Collision" type="CollisionShape2D" parent="Furniture/Table2"]
-shape = SubResource("table2")
+[node name="Collision" type="CollisionShape2D" parent="Furniture/MeetingRoomDesks/Desk2"]
+shape = SubResource("desk_collision")
 
-[node name="Table2Sprite" type="Sprite2D" parent="Furniture/Table2"]
-texture = ExtResource("5_computer")
-scale = Vector2(2, 2)
+[node name="Sprite" type="Sprite2D" parent="Furniture/MeetingRoomDesks/Desk2"]
+texture = ExtResource("3_computer_01")
 
-[node name="Chair2" type="Sprite2D" parent="Furniture"]
-position = Vector2(800, 180)
-texture = ExtResource("4_chair")
-scale = Vector2(1.5, 1.5)
+[node name="Desk3" type="StaticBody2D" parent="Furniture/MeetingRoomDesks"]
+position = Vector2(800, 100)
+
+[node name="Collision" type="CollisionShape2D" parent="Furniture/MeetingRoomDesks/Desk3"]
+shape = SubResource("desk_collision")
+
+[node name="Sprite" type="Sprite2D" parent="Furniture/MeetingRoomDesks/Desk3"]
+texture = ExtResource("4_computer_02")
+
+[node name="Desk4" type="StaticBody2D" parent="Furniture/MeetingRoomDesks"]
+position = Vector2(900, 100)
+
+[node name="Collision" type="CollisionShape2D" parent="Furniture/MeetingRoomDesks/Desk4"]
+shape = SubResource("desk_collision")
+
+[node name="Sprite" type="Sprite2D" parent="Furniture/MeetingRoomDesks/Desk4"]
+texture = ExtResource("5_computer_04")
+
+[node name="Desk5" type="StaticBody2D" parent="Furniture/MeetingRoomDesks"]
+position = Vector2(600, 180)
+
+[node name="Collision" type="CollisionShape2D" parent="Furniture/MeetingRoomDesks/Desk5"]
+shape = SubResource("desk_collision")
+
+[node name="Sprite" type="Sprite2D" parent="Furniture/MeetingRoomDesks/Desk5"]
+texture = ExtResource("2_computer_00")
+
+[node name="Desk6" type="StaticBody2D" parent="Furniture/MeetingRoomDesks"]
+position = Vector2(700, 180)
+
+[node name="Collision" type="CollisionShape2D" parent="Furniture/MeetingRoomDesks/Desk6"]
+shape = SubResource("desk_collision")
+
+[node name="Sprite" type="Sprite2D" parent="Furniture/MeetingRoomDesks/Desk6"]
+texture = ExtResource("3_computer_01")
 
 [node name="Divider" type="StaticBody2D" parent="Furniture"]
 position = Vector2(512, 350)
@@ -170,7 +160,7 @@ offset_left = -10
 offset_top = -100
 offset_right = 10
 offset_bottom = 100
-color = Color(0.35, 0.35, 0.4, 1)
+color = Color(0.3, 0.3, 0.35, 1)
 
 [node name="Areas" type="Node2D" parent="."]
 
@@ -180,38 +170,62 @@ position = Vector2(256, 300)
 [node name="LobbyShape" type="CollisionShape2D" parent="Areas/Lobby"]
 shape = SubResource("lobby_area")
 
-[node name="LobbyLabel" type="Label" parent="Areas/Lobby"]
-offset_left = -100
-offset_top = -250
-offset_right = 100
-offset_bottom = -220
+[node name="LobbyLabel" type="PanelContainer" parent="Areas/Lobby"]
+offset_left = -60
+offset_top = -240
+offset_right = 60
+offset_bottom = -200
+
+[node name="Label" type="Label" parent="Areas/Lobby/LobbyLabel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
 text = "LOBBY"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="MeetingRoom" type="Area2D" parent="Areas" groups=["named_area"]]
-position = Vector2(768, 150)
+position = Vector2(768, 144)
 
 [node name="MeetingRoomShape" type="CollisionShape2D" parent="Areas/MeetingRoom"]
 shape = SubResource("meeting_area")
 
-[node name="MeetingRoomLabel" type="Label" parent="Areas/MeetingRoom"]
-offset_left = -100
-offset_top = -80
-offset_right = 100
+[node name="MeetingRoomLabel" type="PanelContainer" parent="Areas/MeetingRoom"]
+offset_left = -80
+offset_top = -90
+offset_right = 80
 offset_bottom = -50
+
+[node name="Label" type="Label" parent="Areas/MeetingRoom/MeetingRoomLabel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
 text = "MEETING ROOM"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Lounge" type="Area2D" parent="Areas" groups=["named_area"]]
-position = Vector2(768, 450)
+position = Vector2(768, 444)
 
 [node name="LoungeShape" type="CollisionShape2D" parent="Areas/Lounge"]
 shape = SubResource("lounge_area")
 
-[node name="LoungeLabel" type="Label" parent="Areas/Lounge"]
-offset_left = -100
+[node name="LoungeLabel" type="PanelContainer" parent="Areas/Lounge"]
+offset_left = -60
 offset_top = -100
-offset_right = 100
-offset_bottom = -70
+offset_right = 60
+offset_bottom = -60
+
+[node name="Label" type="Label" parent="Areas/Lounge/LoungeLabel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
 text = "LOUNGE"
 horizontal_alignment = 1
+vertical_alignment = 1
