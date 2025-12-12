@@ -1,0 +1,66 @@
+[gd_scene load_steps=2 format=3 uid="uid://game_hud"]
+
+[ext_resource type="Script" path="res://ui/GameHUD.gd" id="1_script"]
+
+[node name="GameHUD" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_script")
+
+[node name="TopBar" type="HBoxContainer" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 40
+
+[node name="UsernameLabel" type="Label" parent="TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Player"
+
+[node name="AreaLabel" type="Label" parent="TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Area: ---"
+horizontal_alignment = 1
+
+[node name="MicButton" type="Button" parent="TopBar"]
+layout_mode = 2
+text = "Mic OFF"
+
+[node name="NearbyPanel" type="PanelContainer" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -200
+offset_top = 50
+offset_right = -10
+offset_bottom = 200
+grow_horizontal = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="NearbyPanel"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="NearbyPanel/VBoxContainer"]
+layout_mode = 2
+text = "Nearby Players"
+
+[node name="HSeparator" type="HSeparator" parent="NearbyPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="NearbyList" type="VBoxContainer" parent="NearbyPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="ControlsPanel" type="PanelContainer" parent="."]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 10
+offset_top = -100
+offset_right = 210
+offset_bottom = -10
+grow_vertical = 0
+
+[node name="ControlsLabel" type="Label" parent="ControlsPanel"]
+layout_mode = 2
+text = "Controls:
+WASD / Arrows - Move
+M - Toggle Mic"

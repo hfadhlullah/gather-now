@@ -1,0 +1,51 @@
+[gd_scene load_steps=8 format=3 uid="uid://player_scene"]
+
+[ext_resource type="Script" path="res://scripts/Player.gd" id="1_player"]
+[ext_resource type="Texture2D" path="res://assets/sprites/character_1.png" id="2_sprite"]
+[ext_resource type="Texture2D" path="res://assets/sprites/mic_on.png" id="3_mic"]
+[ext_resource type="Texture2D" path="res://assets/sprites/speaking.png" id="4_speak"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_collision"]
+size = Vector2(14, 20)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_sync"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_player")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_sprite")
+texture_filter = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_collision")
+
+[node name="NameLabel" type="Label" parent="."]
+offset_left = -50
+offset_top = -40
+offset_right = 50
+offset_bottom = -24
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MicIndicator" type="Sprite2D" parent="."]
+position = Vector2(12, -20)
+texture = ExtResource("3_mic")
+texture_filter = 1
+
+[node name="SpeakingIndicator" type="Sprite2D" parent="."]
+visible = false
+modulate = Color(1, 1, 0.5, 0.7)
+position = Vector2(0, 0)
+texture = ExtResource("4_speak")
+texture_filter = 1
+
+[node name="Camera2D" type="Camera2D" parent="."]
+enabled = false
+zoom = Vector2(2, 2)
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_sync")

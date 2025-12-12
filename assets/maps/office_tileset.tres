@@ -1,0 +1,15 @@
+[gd_resource type="TileSet" format=3 uid="uid://office_tileset"]
+
+[ext_resource type="Texture2D" path="res://assets/maps/tilesets/FloorAndGround.png" id="1_floor"]
+[ext_resource type="Texture2D" path="res://assets/maps/tilesets/Modern_Office_Black_Shadow.png" id="2_office"]
+
+[resource]
+tile_size = Vector2i(32, 32)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_floor"]
+texture = ExtResource("1_floor")
+texture_region_size = Vector2i(32, 32)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_office"]
+texture = ExtResource("2_office")
+texture_region_size = Vector2i(32, 32)
