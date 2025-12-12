@@ -9,20 +9,37 @@ extends Node2D
 ## Floor tile size
 const TILE_SIZE := 32
 
-## Area definitions for floor generation
+## Texture reference for floor patterns
+var floor_texture: Texture2D
+
+## Area definitions for floor generation (position and size in pixels)
 var lobby_rect := Rect2(32, 32, 448, 536)
 var meeting_rect := Rect2(544, 32, 448, 224)
 var lounge_rect := Rect2(544, 320, 448, 248)
+
+## Texture regions from FloorAndGround.png (x, y positions of 32x32 tiles)
+# Column 1: Various patterns at x=0-32
+# Column 2: Patterns at x=32-64
+# etc.
+var lobby_tile_region := Rect2(0, 0, 32, 32) # First tile - tan pattern
+var meeting_tile_region := Rect2(32, 0, 32, 32) # Second column - gray pattern
+var lounge_tile_region := Rect2(64, 0, 32, 32) # Third column - checkered
 
 ## Reference to AreaDetector
 var area_detector: Node
 
 
 func _ready() -> void:
+	# Load the floor texture
+	floor_texture = load("res://assets/maps/tilesets/FloorAndGround.png")
+	
+	# Load custom lobby floor texture
+	var lobby_floor_tex = load("res://assets/sprites/floor/floor1.png")
+	
 	# Generate floors for each area
-	_generate_floor($FloorLayers/LobbyFloor, lobby_rect, "res://assets/sprites/floors/floor_000.png")
-	_generate_floor($FloorLayers/MeetingRoomFloor, meeting_rect, "res://assets/sprites/floors/floor_064.png")
-	_generate_floor($FloorLayers/LoungeFloor, lounge_rect, "res://assets/sprites/floors/floor_128.png")
+	_generate_floor_with_texture($FloorLayers/LobbyFloor, lobby_rect, lobby_floor_tex)
+	_generate_floor($FloorLayers/MeetingRoomFloor, meeting_rect, meeting_tile_region)
+	_generate_floor($FloorLayers/LoungeFloor, lounge_rect, lounge_tile_region)
 	
 	# Find or create area detector
 	area_detector = get_tree().get_first_node_in_group("area_detector")
@@ -39,11 +56,15 @@ func _ready() -> void:
 		player_manager.set_spawn_position(spawn_position)
 
 
-func _generate_floor(container: Node2D, rect: Rect2, tile_path: String) -> void:
-	var texture := load(tile_path) as Texture2D
-	if not texture:
-		push_error("Could not load floor texture: " + tile_path)
+func _generate_floor(container: Node2D, rect: Rect2, tile_region: Rect2) -> void:
+	if not floor_texture:
+		push_error("Floor texture not loaded!")
 		return
+	
+	# Create an AtlasTexture for the specific tile region
+	var atlas_tex := AtlasTexture.new()
+	atlas_tex.atlas = floor_texture
+	atlas_tex.region = tile_region
 	
 	var cols := int(rect.size.x / TILE_SIZE)
 	var rows := int(rect.size.y / TILE_SIZE)
@@ -51,9 +72,28 @@ func _generate_floor(container: Node2D, rect: Rect2, tile_path: String) -> void:
 	for row in range(rows):
 		for col in range(cols):
 			var sprite := Sprite2D.new()
-			sprite.texture = texture
+			sprite.texture = atlas_tex
 			sprite.centered = false
 			sprite.position = Vector2(rect.position.x + col * TILE_SIZE, rect.position.y + row * TILE_SIZE)
+			container.add_child(sprite)
+
+
+## Generate floor using a direct texture (tiles it across the area)
+func _generate_floor_with_texture(container: Node2D, rect: Rect2, tex: Texture2D) -> void:
+	if not tex:
+		push_error("Texture not provided!")
+		return
+	
+	var tex_size := tex.get_size()
+	var cols := int(rect.size.x / tex_size.x) + 1
+	var rows := int(rect.size.y / tex_size.y) + 1
+	
+	for row in range(rows):
+		for col in range(cols):
+			var sprite := Sprite2D.new()
+			sprite.texture = tex
+			sprite.centered = false
+			sprite.position = Vector2(rect.position.x + col * tex_size.x, rect.position.y + row * tex_size.y)
 			container.add_child(sprite)
 
 

@@ -3,7 +3,7 @@
 #
 # MULTIPLAYER AUTHORITY:
 # - Only the owning client can control their player (is_multiplayer_authority())
-# - Position is synced to all clients via MultiplayerSynchronizer in Player.tscn
+# - Position is synced via RPC to ensure host->client sync works
 # - Visual updates (name, character sprite) are set once on spawn
 
 extends CharacterBody2D
@@ -13,10 +13,17 @@ const SPEED := 200.0
 const ACCELERATION := 1200.0
 const FRICTION := 1000.0
 
+## Sync interval (send position updates every N physics frames)
+const SYNC_INTERVAL := 2
+var sync_counter := 0
+
 ## Player data (set on spawn)
 var player_username: String = ""
 var character_id: int = 0
 var peer_id: int = 0
+
+## Target position for interpolation (remote players)
+var target_position: Vector2 = Vector2.ZERO
 
 ## References to child nodes
 @onready var sprite: Sprite2D = $Sprite2D
@@ -28,11 +35,14 @@ var peer_id: int = 0
 ## Character sprite textures (loaded on ready)
 var character_textures: Array[Texture2D] = []
 
+## Flag to track if setup has been called
+var is_setup_complete: bool = false
+
 
 func _ready() -> void:
 	# Load character textures
 	for i in range(1, 7):
-		var tex := load("res://assets/sprites/character_%d.png" % i) as Texture2D
+		var tex := load("res://assets/sprites/characters/character_%d.png" % i) as Texture2D
 		if tex:
 			character_textures.append(tex)
 	
@@ -43,15 +53,11 @@ func _ready() -> void:
 	VoiceManager.mic_toggled.connect(_on_mic_toggled)
 	VoiceManager.speaking_changed.connect(_on_speaking_changed)
 	
-	# Only enable camera for local player
-	if is_multiplayer_authority():
-		camera.enabled = true
-		camera.make_current()
-	else:
-		camera.enabled = false
+	# Camera setup is deferred to setup() when authority is known
+	camera.enabled = false
 	
-	# Initialize visuals
-	_update_visuals()
+	# Initialize target position
+	target_position = position
 
 
 func _exit_tree() -> void:
@@ -59,28 +65,40 @@ func _exit_tree() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	# Only process input for the local player
-	if not is_multiplayer_authority():
-		return
-	
-	# Get input direction
-	var input_dir := Vector2.ZERO
-	input_dir.x = Input.get_axis("move_left", "move_right")
-	input_dir.y = Input.get_axis("move_up", "move_down")
-	input_dir = input_dir.normalized()
-	
-	# Apply acceleration or friction
-	if input_dir != Vector2.ZERO:
-		velocity = velocity.move_toward(input_dir * SPEED, ACCELERATION * delta)
+	if is_multiplayer_authority():
+		# Local player: process input and move
+		var input_dir := Vector2.ZERO
+		input_dir.x = Input.get_axis("move_left", "move_right")
+		input_dir.y = Input.get_axis("move_up", "move_down")
+		input_dir = input_dir.normalized()
+		
+		# Apply acceleration or friction
+		if input_dir != Vector2.ZERO:
+			velocity = velocity.move_toward(input_dir * SPEED, ACCELERATION * delta)
+		else:
+			velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
+		
+		# Move and handle collisions
+		move_and_slide()
+		
+		# Sync position to all other clients periodically
+		sync_counter += 1
+		if sync_counter >= SYNC_INTERVAL:
+			sync_counter = 0
+			_sync_position.rpc(position)
+		
+		# Check for mic toggle input
+		if Input.is_action_just_pressed("toggle_mic"):
+			VoiceManager.toggle_mic()
 	else:
-		velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
-	
-	# Move and handle collisions
-	move_and_slide()
-	
-	# Check for mic toggle input
-	if Input.is_action_just_pressed("toggle_mic"):
-		VoiceManager.toggle_mic()
+		# Remote player: interpolate to target position
+		position = position.lerp(target_position, 15.0 * delta)
+
+
+## RPC to sync position from authority to all peers
+@rpc("authority", "call_remote", "unreliable_ordered")
+func _sync_position(pos: Vector2) -> void:
+	target_position = pos
 
 
 ## Initialize player with data from network
@@ -92,9 +110,21 @@ func setup(p_peer_id: int, p_username: String, p_character_id: int) -> void:
 	# Set multiplayer authority to the owning peer
 	set_multiplayer_authority(p_peer_id)
 	
+	# Now check if this is local player and enable camera
+	if is_multiplayer_authority():
+		camera.enabled = true
+		camera.make_current()
+		print("[Player] Local player camera enabled for peer ", p_peer_id)
+	else:
+		camera.enabled = false
+		print("[Player] Remote player (peer ", p_peer_id, ") - camera disabled")
+	
 	# Update visuals if nodes are ready
 	if is_node_ready():
 		_update_visuals()
+	
+	is_setup_complete = true
+	target_position = position
 
 
 ## Update visual elements (sprite, name label)
@@ -119,10 +149,10 @@ func _update_mic_indicator() -> void:
 	
 	# For local player, show mic state
 	if VoiceManager.mic_enabled:
-		mic_indicator.texture = load("res://assets/sprites/mic_on.png")
+		mic_indicator.texture = load("res://assets/sprites/ui/mic_on.png")
 		mic_indicator.visible = true
 	else:
-		mic_indicator.texture = load("res://assets/sprites/mic_off.png")
+		mic_indicator.texture = load("res://assets/sprites/ui/mic_off.png")
 		mic_indicator.visible = true
 
 

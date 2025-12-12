@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c3scjq5atx1xd"
-path="res://.godot/imported/computer_05.png-a4bb1475ecd5d8fa4b6a898488b95e51.ctex"
+uid="uid://b1g54bfdody2j"
+path="res://.godot/imported/speaking.png-d43c5e7fa844e53e804bc3af3bc69650.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/furniture/computers/computer_05.png"
-dest_files=["res://.godot/imported/computer_05.png-a4bb1475ecd5d8fa4b6a898488b95e51.ctex"]
+source_file="res://assets/sprites/ui/speaking.png"
+dest_files=["res://.godot/imported/speaking.png-d43c5e7fa844e53e804bc3af3bc69650.ctex"]
 
 [params]
 

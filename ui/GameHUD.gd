@@ -18,8 +18,8 @@ var mic_off_texture: Texture2D
 
 func _ready() -> void:
 	# Load mic icons
-	mic_on_texture = load("res://assets/sprites/mic_on.png")
-	mic_off_texture = load("res://assets/sprites/mic_off.png")
+	mic_on_texture = load("res://assets/sprites/ui/mic_on.png")
+	mic_off_texture = load("res://assets/sprites/ui/mic_off.png")
 	
 	# Set initial state
 	_update_mic_button()

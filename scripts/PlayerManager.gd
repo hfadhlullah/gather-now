@@ -27,16 +27,19 @@ func _on_player_connected(peer_id: int, player_data: Dictionary) -> void:
 		return
 	
 	var player := PLAYER_SCENE.instantiate()
-	player.name = str(peer_id)  # Important for multiplayer identity
+	player.name = str(peer_id)
 	
-	# Set initial position near spawn point with some randomness
+	# Set authority BEFORE adding to tree
+	player.set_multiplayer_authority(peer_id)
+	
+	# Set initial position
 	var offset := Vector2(randf_range(-50, 50), randf_range(-50, 50))
 	player.position = spawn_position + offset
 	
-	# Add to scene tree first
-	players_container.add_child(player, true)  # force_readable_name
+	# Add to scene tree
+	players_container.add_child(player, true)
 	
-	# Then setup player data
+	# Setup player data
 	player.setup(
 		peer_id,
 		player_data.get("username", "Player"),

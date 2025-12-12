@@ -45,7 +45,7 @@ func _on_host_pressed() -> void:
 	host_button.disabled = true
 	join_button.disabled = true
 	
-	var error := NetworkManager.create_server(port)
+	var error: Error = NetworkManager.create_server(port)
 	if error != OK:
 		_show_status("Failed to start server", Color.RED)
 		host_button.disabled = false
@@ -68,7 +68,7 @@ func _on_join_pressed() -> void:
 	host_button.disabled = true
 	join_button.disabled = true
 	
-	var error := NetworkManager.join_server(ip, port)
+	var error: Error = NetworkManager.join_server(ip, port)
 	if error != OK:
 		_show_status("Failed to connect", Color.RED)
 		host_button.disabled = false

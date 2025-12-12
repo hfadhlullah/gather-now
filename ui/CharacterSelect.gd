@@ -70,7 +70,7 @@ func _setup_character_buttons() -> void:
 		panel.add_child(vbox)
 		
 		var texture_rect := TextureRect.new()
-		texture_rect.texture = load("res://assets/sprites/character_%d.png" % (i + 1))
+		texture_rect.texture = load("res://assets/sprites/characters/character_%d.png" % (i + 1))
 		texture_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		texture_rect.custom_minimum_size = Vector2(48, 72)
 		texture_rect.expand_mode = TextureRect.EXPAND_KEEP_SIZE

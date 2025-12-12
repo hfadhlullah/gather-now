@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c3scjq5atx1xd"
-path="res://.godot/imported/computer_05.png-a4bb1475ecd5d8fa4b6a898488b95e51.ctex"
+uid="uid://dqjjiotgbveu3"
+path="res://.godot/imported/wall.png-5d2d0047ff750f73c2b320c770bef4a5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/furniture/computers/computer_05.png"
-dest_files=["res://.godot/imported/computer_05.png-a4bb1475ecd5d8fa4b6a898488b95e51.ctex"]
+source_file="res://assets/sprites/furniture/wall.png"
+dest_files=["res://.godot/imported/wall.png-5d2d0047ff750f73c2b320c770bef4a5.ctex"]
 
 [params]
 

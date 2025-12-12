@@ -1,17 +1,12 @@
-[gd_scene load_steps=8 format=3 uid="uid://player_scene"]
+[gd_scene load_steps=6 format=3 uid="uid://player_scene"]
 
 [ext_resource type="Script" path="res://scripts/Player.gd" id="1_player"]
-[ext_resource type="Texture2D" path="res://assets/sprites/character_1.png" id="2_sprite"]
-[ext_resource type="Texture2D" path="res://assets/sprites/mic_on.png" id="3_mic"]
-[ext_resource type="Texture2D" path="res://assets/sprites/speaking.png" id="4_speak"]
+[ext_resource type="Texture2D" path="res://assets/sprites/characters/character_1.png" id="2_sprite"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/mic_on.png" id="3_mic"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/speaking.png" id="4_speak"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_collision"]
 size = Vector2(14, 20)
-
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_sync"]
-properties/0/path = NodePath(".:position")
-properties/0/spawn = true
-properties/0/replication_mode = 1
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_player")
@@ -46,6 +41,3 @@ texture_filter = 1
 [node name="Camera2D" type="Camera2D" parent="."]
 enabled = false
 zoom = Vector2(2, 2)
-
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_sync")
