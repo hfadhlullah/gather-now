@@ -4,25 +4,25 @@
 class_name CharacterSelectTest
 extends GdUnitTestSuite
 
-const CharacterSelectScene := preload("res://ui/CharacterSelect.tscn")
+const CHARACTER_SELECT_PATH := "res://ui/CharacterSelect.tscn"
 
 var _char_select: Control
-var _runner: GdUnitSceneRunner
 
 
 func before_test() -> void:
 	# Set up mock username before creating scene
 	NetworkManager.local_username = "TestPlayer"
 
-	_runner = scene_runner(CharacterSelectScene)
-	_char_select = _runner.scene()
+	var scene := load(CHARACTER_SELECT_PATH)
+	_char_select = auto_free(scene.instantiate())
+	add_child(_char_select)
 	# Wait for _setup_character_buttons to complete
-	await _runner.simulate_frames(2)
+	await get_tree().process_frame
+	await get_tree().process_frame
 
 
 func after_test() -> void:
 	_char_select = null
-	_runner = null
 
 
 # ============================================
@@ -158,7 +158,7 @@ func test_normal_style_has_rounded_corners() -> void:
 
 func test_update_selection_ui_applies_selected_style_to_current() -> void:
 	_char_select._select_character(2)
-	await _runner.simulate_frames(1)
+	await get_tree().process_frame
 
 	var panel: PanelContainer = _char_select.character_buttons[2]
 	var current_style = panel.get_theme_stylebox("panel")
@@ -168,7 +168,7 @@ func test_update_selection_ui_applies_selected_style_to_current() -> void:
 
 func test_update_selection_ui_applies_normal_style_to_others() -> void:
 	_char_select._select_character(2)
-	await _runner.simulate_frames(1)
+	await get_tree().process_frame
 
 	# Check a non-selected button
 	var panel: PanelContainer = _char_select.character_buttons[0]

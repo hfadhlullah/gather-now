@@ -4,21 +4,20 @@
 class_name LoginScreenTest
 extends GdUnitTestSuite
 
-const LoginScreenScene := preload("res://ui/LoginScreen.tscn")
+const LOGIN_SCREEN_PATH := "res://ui/LoginScreen.tscn"
 
 var _login_screen: Control
-var _runner: GdUnitSceneRunner
 
 
 func before_test() -> void:
-	_runner = scene_runner(LoginScreenScene)
-	_login_screen = _runner.scene()
-	await _runner.simulate_frames(1)
+	var scene := load(LOGIN_SCREEN_PATH)
+	_login_screen = auto_free(scene.instantiate())
+	add_child(_login_screen)
+	await get_tree().process_frame
 
 
 func after_test() -> void:
 	_login_screen = null
-	_runner = null
 
 
 # ============================================
@@ -77,13 +76,11 @@ func test_validate_credentials_case_sensitive_password() -> void:
 
 
 func test_initial_state_error_hidden() -> void:
-	var error_label: Label = _login_screen.error_label
-	assert_bool(error_label.visible).is_false()
+	assert_bool(_login_screen.error_label.visible).is_false()
 
 
 func test_initial_state_error_text_empty() -> void:
-	var error_label: Label = _login_screen.error_label
-	assert_str(error_label.text).is_empty()
+	assert_str(_login_screen.error_label.text).is_empty()
 
 
 func test_show_error_makes_label_visible() -> void:
