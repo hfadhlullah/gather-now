@@ -15,10 +15,21 @@ run/main_scene="res://scenes/Main.tscn"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[audio]
+
+driver/enable_input=true
+
 [autoload]
 
 NetworkManager="*res://networking/NetworkManager.gd"
 VoiceManager="*res://networking/VoiceManager.gd"
+SettingsManager="*res://scripts/SettingsManager.gd"
+
+[gui]
+
+theme/default_font_antialiasing=2
+theme/default_font_hinting=2
+theme/default_font_generate_mipmaps=true
 
 [input]
 

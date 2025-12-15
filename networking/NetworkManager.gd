@@ -52,22 +52,20 @@ func _ready() -> void:
 func create_server(port: int = DEFAULT_PORT) -> Error:
 	var peer := ENetMultiplayerPeer.new()
 	var error := peer.create_server(port, MAX_CLIENTS)
-	
+
 	if error != OK:
 		connection_failed.emit("Failed to create server on port %d" % port)
 		return error
-	
+
 	multiplayer.multiplayer_peer = peer
 	is_server = true
-	
+
 	# Register self as player on server
 	var my_id := multiplayer.get_unique_id()
 	players[my_id] = {
-		"username": local_username,
-		"character_id": local_character_id,
-		"position": Vector2.ZERO
+		"username": local_username, "character_id": local_character_id, "position": Vector2.ZERO
 	}
-	
+
 	server_started.emit()
 	player_connected.emit(my_id, players[my_id])
 	print("[Server] Started on port ", port)
@@ -78,11 +76,11 @@ func create_server(port: int = DEFAULT_PORT) -> Error:
 func join_server(ip: String, port: int = DEFAULT_PORT) -> Error:
 	var peer := ENetMultiplayerPeer.new()
 	var error := peer.create_client(ip, port)
-	
+
 	if error != OK:
 		connection_failed.emit("Failed to connect to %s:%d" % [ip, port])
 		return error
-	
+
 	multiplayer.multiplayer_peer = peer
 	is_server = false
 	print("[Client] Connecting to ", ip, ":", port)
@@ -137,29 +135,27 @@ func _on_peer_disconnected(peer_id: int) -> void:
 func _request_join(username: String, character_id: int) -> void:
 	if not multiplayer.is_server():
 		return
-	
+
 	var sender_id := multiplayer.get_remote_sender_id()
-	
+
 	# Validate username uniqueness
 	for peer_id in players:
 		if players[peer_id].username == username:
 			_reject_join.rpc_id(sender_id, "Username '%s' is already taken" % username)
 			return
-	
+
 	# Username is valid, register the player
 	var player_data := {
-		"username": username,
-		"character_id": character_id,
-		"position": Vector2.ZERO
+		"username": username, "character_id": character_id, "position": Vector2.ZERO
 	}
 	players[sender_id] = player_data
-	
+
 	# Notify the new client they're accepted and send existing players
 	_accept_join.rpc_id(sender_id, players)
-	
+
 	# Notify all other clients about the new player
 	_on_player_joined.rpc(sender_id, player_data)
-	
+
 	player_connected.emit(sender_id, player_data)
 	print("[Server] Player joined: ", username, " (", sender_id, ")")
 
@@ -178,11 +174,11 @@ func _reject_join(reason: String) -> void:
 func _accept_join(all_players: Dictionary) -> void:
 	players = all_players
 	connection_succeeded.emit()
-	
+
 	# Emit signals for each existing player
 	for peer_id in players:
 		player_connected.emit(peer_id, players[peer_id])
-	
+
 	print("[Client] Joined! Players: ", players.keys())
 
 
