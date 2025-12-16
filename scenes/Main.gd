@@ -10,12 +10,7 @@
 extends Node
 
 ## Screen states
-enum GameState {
-	LOGIN,
-	CHARACTER_SELECT,
-	HOST_JOIN,
-	PLAYING
-}
+enum GameState { LOGIN, CHARACTER_SELECT, HOST_JOIN, PLAYING }
 
 ## Current state
 var current_state: GameState = GameState.LOGIN
@@ -42,6 +37,8 @@ var game_hud: CanvasLayer = null
 
 
 func _ready() -> void:
+	# Add to group so HUD can find us for logout
+	add_to_group("main")
 	# Start at login screen
 	_change_state(GameState.LOGIN)
 
@@ -52,9 +49,9 @@ func _change_state(new_state: GameState) -> void:
 	if current_screen:
 		current_screen.queue_free()
 		current_screen = null
-	
+
 	current_state = new_state
-	
+
 	match new_state:
 		GameState.LOGIN:
 			_show_login_screen()
@@ -90,15 +87,16 @@ func _start_game() -> void:
 	# Load the game world
 	game_world = office_scene.instantiate()
 	game_container.add_child(game_world)
-	
+
 	# Add the HUD
 	game_hud = game_hud_scene.instantiate()
 	add_child(game_hud)
-	
+
 	print("[Main] Game started!")
 
 
 ## Callbacks
+
 
 func _on_login_completed(username: String) -> void:
 	print("[Main] Logged in as: ", username)
@@ -130,13 +128,13 @@ func disconnect_and_return() -> void:
 	if game_world:
 		game_world.queue_free()
 		game_world = null
-	
+
 	if game_hud:
 		game_hud.queue_free()
 		game_hud = null
-	
+
 	# Disconnect from network
 	NetworkManager.disconnect_from_server()
-	
+
 	# Return to login
 	_change_state(GameState.LOGIN)

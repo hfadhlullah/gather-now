@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://game_hud"]
+[gd_scene load_steps=3 format=3 uid="uid://game_hud"]
 
 [ext_resource type="Script" path="res://ui/GameHUD.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://excalidraw_modal" path="res://ui/ExcalidrawModal.tscn" id="2_modal"]
 
 [node name="GameHUD" type="CanvasLayer"]
 layer = 10
@@ -25,6 +26,10 @@ horizontal_alignment = 1
 [node name="MicButton" type="Button" parent="TopBar"]
 layout_mode = 2
 text = "Mic OFF"
+
+[node name="SettingsButton" type="Button" parent="TopBar"]
+layout_mode = 2
+text = "⚙ Settings"
 
 [node name="NearbyPanel" type="PanelContainer" parent="."]
 anchors_preset = 1
@@ -64,3 +69,31 @@ layout_mode = 2
 text = "Controls:
 WASD / Arrows - Move
 M - Toggle Mic"
+
+[node name="BottomNotification" type="PanelContainer" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -150
+offset_top = -60
+offset_right = 150
+offset_bottom = -10
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BottomNotification"]
+layout_mode = 2
+alignment = 1
+
+[node name="NotificationLabel" type="Label" parent="BottomNotification/HBoxContainer"]
+layout_mode = 2
+text = "📋 Whiteboard available"
+
+[node name="OpenWhiteboardButton" type="Button" parent="BottomNotification/HBoxContainer"]
+layout_mode = 2
+text = "Open Excalidraw"
+
+[node name="ExcalidrawModal" parent="." instance=ExtResource("2_modal")]
+

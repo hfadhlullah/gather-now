@@ -3,45 +3,61 @@
 
 extends CanvasLayer
 
-## UI References
-@onready var username_label: Label = $TopBar/UsernameLabel
-@onready var area_label: Label = $TopBar/AreaLabel
-@onready var mic_button: Button = $TopBar/MicButton
-@onready var nearby_panel: PanelContainer = $NearbyPanel
-@onready var nearby_list: VBoxContainer = $NearbyPanel/VBoxContainer/NearbyList
-@onready var controls_panel: PanelContainer = $ControlsPanel
+## Settings panel scene
+var settings_panel_scene := preload("res://ui/SettingsPanel.tscn")
+
+## Settings panel instance
+var settings_panel: PanelContainer = null
 
 ## Mic icons
 var mic_on_texture: Texture2D
 var mic_off_texture: Texture2D
 
+## UI References
+@onready var username_label: Label = $TopBar/UsernameLabel
+@onready var area_label: Label = $TopBar/AreaLabel
+@onready var mic_button: Button = $TopBar/MicButton
+@onready var settings_button: Button = $TopBar/SettingsButton
+@onready var nearby_panel: PanelContainer = $NearbyPanel
+@onready var nearby_list: VBoxContainer = $NearbyPanel/VBoxContainer/NearbyList
+@onready var controls_panel: PanelContainer = $ControlsPanel
+@onready var bottom_notification: PanelContainer = $BottomNotification
+@onready var open_whiteboard_button: Button = $BottomNotification/HBoxContainer/OpenWhiteboardButton
+
 
 func _ready() -> void:
-	# Load mic icons
 	mic_on_texture = load("res://assets/sprites/ui/mic_on.png")
 	mic_off_texture = load("res://assets/sprites/ui/mic_off.png")
-	
-	# Set initial state
+
 	_update_mic_button()
 	username_label.text = NetworkManager.local_username
 	area_label.text = "Area: ---"
-	
-	# Connect signals
+
+	settings_panel = settings_panel_scene.instantiate()
+	add_child(settings_panel)
+	settings_panel.hide()
+	settings_panel.settings_closed.connect(_on_settings_closed)
+	settings_panel.logout_requested.connect(_on_logout_requested)
+
 	mic_button.pressed.connect(_on_mic_button_pressed)
+	settings_button.pressed.connect(_on_settings_button_pressed)
 	VoiceManager.mic_toggled.connect(_on_mic_toggled)
 	VoiceManager.player_entered_voice_range.connect(_on_player_entered_range)
 	VoiceManager.player_exited_voice_range.connect(_on_player_exited_range)
-	
-	# Find and connect to AreaDetector if it exists
+
 	await get_tree().process_frame
 	var area_detector := get_tree().get_first_node_in_group("area_detector")
 	if area_detector and area_detector.has_signal("area_changed"):
 		area_detector.area_changed.connect(_on_area_changed)
-	
-	# Update nearby list periodically
+
+	# Whiteboard notification setup
+	bottom_notification.visible = false
+	open_whiteboard_button.pressed.connect(_on_open_whiteboard_pressed)
+	WhiteboardManager.whiteboard_available.connect(_on_whiteboard_available)
+	WhiteboardManager.whiteboard_unavailable.connect(_on_whiteboard_unavailable)
+
 	_update_nearby_list()
-	
-	# Create a timer to update nearby list every second
+
 	var timer := Timer.new()
 	timer.wait_time = 1.0
 	timer.autostart = true
@@ -84,13 +100,11 @@ func _on_player_exited_range(_peer_id: int) -> void:
 
 
 func _update_nearby_list() -> void:
-	# Clear existing list
 	for child in nearby_list.get_children():
 		child.queue_free()
-	
-	# Get nearby players from VoiceManager
+
 	var nearby_players := VoiceManager.get_nearby_players()
-	
+
 	if nearby_players.is_empty():
 		var label := Label.new()
 		label.text = "No one nearby"
@@ -104,11 +118,46 @@ func _update_nearby_list() -> void:
 			nearby_list.add_child(label)
 
 
-## Show/hide controls panel
 func toggle_controls() -> void:
 	controls_panel.visible = not controls_panel.visible
 
 
-## Set the username displayed
 func set_username(username: String) -> void:
 	username_label.text = username
+
+
+func _on_settings_button_pressed() -> void:
+	if settings_panel:
+		settings_panel.show_settings()
+
+
+func _on_settings_closed() -> void:
+	pass  # Settings panel handles hiding itself
+
+
+func _on_logout_requested() -> void:
+	var main_node := get_tree().get_first_node_in_group("main")
+	if main_node and main_node.has_method("disconnect_and_return"):
+		main_node.disconnect_and_return()
+	else:
+		var root := get_tree().root
+		for child in root.get_children():
+			if child.has_method("disconnect_and_return"):
+				child.disconnect_and_return()
+				return
+
+		print("[GameHUD] Could not find Main, reloading scene")
+		get_tree().reload_current_scene()
+
+
+## Whiteboard notification handlers
+func _on_whiteboard_available() -> void:
+	bottom_notification.visible = true
+
+
+func _on_whiteboard_unavailable() -> void:
+	bottom_notification.visible = false
+
+
+func _on_open_whiteboard_pressed() -> void:
+	WhiteboardManager.open_whiteboard()

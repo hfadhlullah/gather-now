@@ -30,7 +30,7 @@ signal speaking_changed(is_speaking: bool)
 
 ## Voice range constants (in pixels)
 const VOICE_RANGE_NEAR := 100.0  # Full volume within this range
-const VOICE_RANGE_FAR := 200.0   # No voice beyond this range
+const VOICE_RANGE_FAR := 200.0  # No voice beyond this range
 
 ## Speaking detection threshold (normalized 0-1)
 const SPEAKING_THRESHOLD := 0.05
@@ -63,7 +63,7 @@ func _ready() -> void:
 func _physics_process(_delta: float) -> void:
 	if local_player == null:
 		return
-	
+
 	_update_proximity()
 	_update_speaking_state()
 
@@ -72,7 +72,7 @@ func _physics_process(_delta: float) -> void:
 func toggle_mic() -> void:
 	mic_enabled = not mic_enabled
 	mic_toggled.emit(mic_enabled)
-	
+
 	if mic_enabled:
 		_start_audio_capture()
 	else:
@@ -87,7 +87,7 @@ func set_mic_enabled(enabled: bool) -> void:
 	if mic_enabled != enabled:
 		mic_enabled = enabled
 		mic_toggled.emit(mic_enabled)
-		
+
 		if mic_enabled:
 			_start_audio_capture()
 		else:
@@ -97,7 +97,7 @@ func set_mic_enabled(enabled: bool) -> void:
 ## Register a player node for proximity tracking
 func register_player(peer_id: int, player_node: Node2D) -> void:
 	player_nodes[peer_id] = player_node
-	
+
 	# Check if this is the local player
 	if peer_id == NetworkManager.get_my_id():
 		local_player = player_node
@@ -106,11 +106,11 @@ func register_player(peer_id: int, player_node: Node2D) -> void:
 ## Unregister a player node
 func unregister_player(peer_id: int) -> void:
 	player_nodes.erase(peer_id)
-	
+
 	if players_in_range.has(peer_id):
 		players_in_range.erase(peer_id)
 		player_exited_voice_range.emit(peer_id)
-	
+
 	if audio_players.has(peer_id):
 		audio_players[peer_id].queue_free()
 		audio_players.erase(peer_id)
@@ -139,18 +139,18 @@ func get_nearby_players() -> Array[int]:
 func _update_proximity() -> void:
 	var my_id := NetworkManager.get_my_id()
 	var my_pos: Vector2 = local_player.global_position
-	
+
 	for peer_id in player_nodes:
 		if peer_id == my_id:
 			continue
-		
+
 		var other_player: Node2D = player_nodes[peer_id]
 		if not is_instance_valid(other_player):
 			continue
-		
+
 		var distance: float = my_pos.distance_to(other_player.global_position)
 		var was_in_range: bool = players_in_range.has(peer_id) and players_in_range[peer_id] > 0.0
-		
+
 		# Calculate volume based on distance
 		var volume: float = 0.0
 		if distance <= VOICE_RANGE_NEAR:
@@ -160,9 +160,9 @@ func _update_proximity() -> void:
 		else:
 			# Linear fade between NEAR and FAR
 			volume = 1.0 - (distance - VOICE_RANGE_NEAR) / (VOICE_RANGE_FAR - VOICE_RANGE_NEAR)
-		
+
 		var is_in_range: bool = volume > 0.0
-		
+
 		# Update state and emit signals if changed
 		if is_in_range and not was_in_range:
 			players_in_range[peer_id] = volume
@@ -181,17 +181,17 @@ func _update_proximity() -> void:
 func _update_speaking_state() -> void:
 	if not mic_enabled:
 		return
-	
+
 	# STUB: Get audio input level
 	# In a real implementation, you would:
 	# 1. Get the AudioEffectCapture from the mic bus
 	# 2. Read audio frames and calculate RMS volume
 	# 3. Compare against SPEAKING_THRESHOLD
-	
+
 	var input_level: float = _get_mic_input_level()
 	var was_speaking := is_speaking
 	is_speaking = input_level > SPEAKING_THRESHOLD
-	
+
 	if is_speaking != was_speaking:
 		speaking_changed.emit(is_speaking)
 

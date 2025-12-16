@@ -23,12 +23,12 @@ func _ready() -> void:
 	port_input.text = str(NetworkManager.DEFAULT_PORT)
 	status_label.text = ""
 	status_label.visible = false
-	
+
 	# Connect buttons
 	host_button.pressed.connect(_on_host_pressed)
 	join_button.pressed.connect(_on_join_pressed)
 	back_button.pressed.connect(_on_back_pressed)
-	
+
 	# Connect network events
 	NetworkManager.server_started.connect(_on_server_started)
 	NetworkManager.connection_succeeded.connect(_on_connection_succeeded)
@@ -40,11 +40,11 @@ func _on_host_pressed() -> void:
 	if port <= 0 or port > 65535:
 		_show_status("Invalid port number", Color.RED)
 		return
-	
+
 	_show_status("Starting server...", Color.YELLOW)
 	host_button.disabled = true
 	join_button.disabled = true
-	
+
 	var error: Error = NetworkManager.create_server(port)
 	if error != OK:
 		_show_status("Failed to start server", Color.RED)
@@ -55,19 +55,19 @@ func _on_host_pressed() -> void:
 func _on_join_pressed() -> void:
 	var ip := ip_input.text.strip_edges()
 	var port := int(port_input.text)
-	
+
 	if ip.is_empty():
 		_show_status("Please enter an IP address", Color.RED)
 		return
-	
+
 	if port <= 0 or port > 65535:
 		_show_status("Invalid port number", Color.RED)
 		return
-	
+
 	_show_status("Connecting to %s:%d..." % [ip, port], Color.YELLOW)
 	host_button.disabled = true
 	join_button.disabled = true
-	
+
 	var error: Error = NetworkManager.join_server(ip, port)
 	if error != OK:
 		_show_status("Failed to connect", Color.RED)

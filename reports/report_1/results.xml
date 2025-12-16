@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites id="2025-12-15" name="report_1" tests="17" failures="2" skipped="0" flaky="0" time="0.000">
+	<testsuite id="0" name="CharacterSelectTest" package="test/ui" timestamp="2025-12-15T10:07:07" hostname="localhost" tests="17" failures="2" errors="0" skipped="0" flaky="0" time="0.953">
+		<testcase name="test_initial_selected_character_is_zero" classname="CharacterSelectTest" time="0.036">
+		</testcase>
+		<testcase name="test_initial_username_label_shows_player_name" classname="CharacterSelectTest" time="0.035">
+		</testcase>
+		<testcase name="test_six_character_buttons_created" classname="CharacterSelectTest" time="0.035">
+		</testcase>
+		<testcase name="test_character_buttons_are_panel_containers" classname="CharacterSelectTest" time="0.035">
+		</testcase>
+		<testcase name="test_select_character_updates_selected_character" classname="CharacterSelectTest" time="0.049">
+		</testcase>
+		<testcase name="test_select_character_updates_network_manager" classname="CharacterSelectTest" time="0.035">
+		</testcase>
+		<testcase name="test_select_character_boundary_zero" classname="CharacterSelectTest" time="0.035">
+		</testcase>
+		<testcase name="test_select_character_boundary_five" classname="CharacterSelectTest" time="0.049">
+		</testcase>
+		<testcase name="test_enter_button_emits_character_selected_signal" classname="CharacterSelectTest" time="0.035">
+			<failure message="FAILED: res://test/ui/CharacterSelectTest.gd:93" type="FAILURE">
+<![CDATA[
+Expecting: 'true' but is 'false'
+]]>
+			</failure>
+			<failure message="FAILED: res://test/ui/CharacterSelectTest.gd:94" type="FAILURE">
+<![CDATA[
+Expecting:
+ '4'
+ but was
+ '-1'
+]]>
+			</failure>
+		</testcase>
+		<testcase name="test_character_selected_signal_emits_current_selection" classname="CharacterSelectTest" time="0.036">
+		</testcase>
+		<testcase name="test_set_username_updates_label" classname="CharacterSelectTest" time="0.049">
+		</testcase>
+		<testcase name="test_set_username_with_empty_string" classname="CharacterSelectTest" time="0.034">
+		</testcase>
+		<testcase name="test_set_username_with_special_characters" classname="CharacterSelectTest" time="0.035">
+		</testcase>
+		<testcase name="test_selected_style_has_border" classname="CharacterSelectTest" time="0.048">
+		</testcase>
+		<testcase name="test_normal_style_has_rounded_corners" classname="CharacterSelectTest" time="0.035">
+		</testcase>
+		<testcase name="test_update_selection_ui_applies_selected_style_to_current" classname="CharacterSelectTest" time="0.056">
+		</testcase>
+		<testcase name="test_update_selection_ui_applies_normal_style_to_others" classname="CharacterSelectTest" time="0.049">
+		</testcase>
+	</testsuite>
+</testsuites>
