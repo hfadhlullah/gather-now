@@ -24,6 +24,7 @@ driver/enable_input=true
 NetworkManager="*res://networking/NetworkManager.gd"
 VoiceManager="*res://networking/VoiceManager.gd"
 SettingsManager="*res://scripts/SettingsManager.gd"
+WhiteboardManager="*res://scripts/WhiteboardManager.gd"
 
 [editor_plugins]
 

@@ -1,0 +1,48 @@
+[gd_scene load_steps=2 format=3 uid="uid://excalidraw_modal"]
+
+[ext_resource type="Script" path="res://ui/ExcalidrawModal.gd" id="1_script"]
+
+[node name="ExcalidrawModal" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+z_index = 100
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="Header" type="HBoxContainer" parent="."]
+z_index = 101
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 50
+offset_top = 30
+offset_right = -50
+offset_bottom = 70
+
+[node name="TitleLabel" type="Label" parent="Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 18
+text = "Excalidraw Whiteboard"
+
+[node name="CloseButton" type="Button" parent="Header"]
+custom_minimum_size = Vector2(80, 35)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Close ✕"
+
+[node name="BrowserWindow" type="Window" parent="."]
+initial_position = 1
+size = Vector2i(900, 600)
+
+[node name="WebView" type="WebView" parent="BrowserWindow"]
+full_window_size = true
+devtools = true
+url = "res://ui/webview_test.html"
+
+[connection signal="pressed" from="Header/CloseButton" to="." method="_on_close_pressed"]
+[connection signal="close_requested" from="BrowserWindow" to="." method="_on_close_pressed"]

@@ -33,6 +33,9 @@ var character_textures: Array[Texture2D] = []
 ## Flag to track if setup has been called
 var is_setup_complete: bool = false
 
+## Whether player input is enabled (disabled when modal overlays are open)
+var input_enabled: bool = true
+
 ## References to child nodes
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var name_label: Label = $NameContainer/NameLabel
@@ -61,9 +64,12 @@ func _exit_tree() -> void:
 func _physics_process(delta: float) -> void:
 	if is_multiplayer_authority():
 		var input_dir := Vector2.ZERO
-		input_dir.x = Input.get_axis("move_left", "move_right")
-		input_dir.y = Input.get_axis("move_up", "move_down")
-		input_dir = input_dir.normalized()
+
+		# Only process input if enabled (disabled during modal overlays)
+		if input_enabled:
+			input_dir.x = Input.get_axis("move_left", "move_right")
+			input_dir.y = Input.get_axis("move_up", "move_down")
+			input_dir = input_dir.normalized()
 
 		if input_dir != Vector2.ZERO:
 			velocity = velocity.move_toward(input_dir * SPEED, ACCELERATION * delta)
@@ -141,3 +147,8 @@ func _on_mic_toggled(_enabled: bool) -> void:
 func _on_speaking_changed(speaking: bool) -> void:
 	if is_multiplayer_authority():
 		speaking_indicator.visible = speaking
+
+
+## Enable or disable player input (used by WhiteboardManager for modal overlays)
+func set_input_enabled(enabled: bool) -> void:
+	input_enabled = enabled

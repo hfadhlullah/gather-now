@@ -1,6 +1,4 @@
-# LoginScreenTest.gd
-# GdUnit4 tests for LoginScreen
-
+# gdlint: ignore=max-public-methods
 class_name LoginScreenTest
 extends GdUnitTestSuite
 

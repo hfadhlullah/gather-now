@@ -21,6 +21,8 @@ var mic_off_texture: Texture2D
 @onready var nearby_panel: PanelContainer = $NearbyPanel
 @onready var nearby_list: VBoxContainer = $NearbyPanel/VBoxContainer/NearbyList
 @onready var controls_panel: PanelContainer = $ControlsPanel
+@onready var bottom_notification: PanelContainer = $BottomNotification
+@onready var open_whiteboard_button: Button = $BottomNotification/HBoxContainer/OpenWhiteboardButton
 
 
 func _ready() -> void:
@@ -47,6 +49,12 @@ func _ready() -> void:
 	var area_detector := get_tree().get_first_node_in_group("area_detector")
 	if area_detector and area_detector.has_signal("area_changed"):
 		area_detector.area_changed.connect(_on_area_changed)
+
+	# Whiteboard notification setup
+	bottom_notification.visible = false
+	open_whiteboard_button.pressed.connect(_on_open_whiteboard_pressed)
+	WhiteboardManager.whiteboard_available.connect(_on_whiteboard_available)
+	WhiteboardManager.whiteboard_unavailable.connect(_on_whiteboard_unavailable)
 
 	_update_nearby_list()
 
@@ -140,3 +148,16 @@ func _on_logout_requested() -> void:
 
 		print("[GameHUD] Could not find Main, reloading scene")
 		get_tree().reload_current_scene()
+
+
+## Whiteboard notification handlers
+func _on_whiteboard_available() -> void:
+	bottom_notification.visible = true
+
+
+func _on_whiteboard_unavailable() -> void:
+	bottom_notification.visible = false
+
+
+func _on_open_whiteboard_pressed() -> void:
+	WhiteboardManager.open_whiteboard()
